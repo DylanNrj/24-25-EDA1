@@ -5,7 +5,6 @@ import java.util.Scanner;
 class Edlin {
 
     private static final String DIRECTORIO_PERSISTENCIA = "guardado";
-    // Extensión .edin para distinguir archivos serializados de Editor de otros formatos de texto plano
     private static final String EXTENSION = ".edin";
 
     public static void main(String[] args) {
@@ -46,10 +45,6 @@ class Edlin {
         entrada.close();
     }
     
-    /**
-     * Verifica si el array de argumentos contiene un flag específico.
-     * Permite evitar funcionalidad innecesaria según contexto de uso (YAGNI).
-     */
     private static boolean contieneFlag(String[] args, String flag) {
         for (String arg : args) {
             if (arg.equals(flag)) {

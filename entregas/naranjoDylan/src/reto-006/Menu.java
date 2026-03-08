@@ -1,12 +1,6 @@
 
 import java.util.Scanner;
 
-/**
- * Menu de interacción con el Editor.
- * 
- * TODO (Refactor): Esta clase mezcla presentación y validación de entrada (SRP).
- * Considerar separar en MenuView (UI) y EntradaValidator (validación).
- */
 class Menu {
 
     private static final String[] OPCIONES = {

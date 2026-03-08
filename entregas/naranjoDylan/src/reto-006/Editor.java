@@ -12,11 +12,6 @@ class Editor implements Serializable {
     private int lineaActiva;
     private String portapapeles;
     
-    /**
-     * Historial de cambios mediante snapshots completos del documento.
-     * Se usa ArrayDeque como stack LIFO para deshacer/rehacer.
-     * Límite de 100 estados para evitar consumo excesivo de memoria.
-     */
     private final Deque<String[]> pilaDeshacer;
     private final Deque<String[]> pilaRehacer;
 
@@ -79,10 +74,6 @@ class Editor implements Serializable {
         }
     }
     
-    /**
-     * Método centralizado para modificar la línea activa con respaldo en historial.
-     * Reduce duplicación del patrón guardarEstadoPrevio() + asignación.
-     */
     private void modificarLineaActual(String nuevoContenido) {
         guardarEstadoPrevio();
         documento[lineaActiva] = nuevoContenido;
