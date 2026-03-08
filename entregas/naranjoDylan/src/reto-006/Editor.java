@@ -11,6 +11,12 @@ class Editor implements Serializable {
     private final String[] documento;
     private int lineaActiva;
     private String portapapeles;
+    
+    /**
+     * Historial de cambios mediante snapshots completos del documento.
+     * Se usa ArrayDeque como stack LIFO para deshacer/rehacer.
+     * Límite de 100 estados para evitar consumo excesivo de memoria.
+     */
     private final Deque<String[]> pilaDeshacer;
     private final Deque<String[]> pilaRehacer;
 
@@ -51,13 +57,11 @@ class Editor implements Serializable {
     }
 
     public void editar(String nuevoTexto) {
-        guardarEstadoPrevio();
-        documento[lineaActiva] = nuevoTexto;
+        modificarLineaActual(nuevoTexto);
     }
 
     public void borrar() {
-        guardarEstadoPrevio();
-        documento[lineaActiva] = "";
+        modificarLineaActual("");
     }
 
     public void copiar() {
@@ -66,12 +70,22 @@ class Editor implements Serializable {
 
     public void pegar() {
         if (!portapapeles.isEmpty()) {
-            guardarEstadoPrevio();
-            documento[lineaActiva] = portapapeles;
-            System.out.println("Pegado en línea " + lineaActiva);
+            modificarLineaActual(portapapeles);
+            System.out.println(
+                String.format("Pegado en línea %d", lineaActiva)
+            );
         } else {
-            System.out.println("El portapapeles esta vacio.");
+            System.out.println("El portapapeles está vacío.");
         }
+    }
+    
+    /**
+     * Método centralizado para modificar la línea activa con respaldo en historial.
+     * Reduce duplicación del patrón guardarEstadoPrevio() + asignación.
+     */
+    private void modificarLineaActual(String nuevoContenido) {
+        guardarEstadoPrevio();
+        documento[lineaActiva] = nuevoContenido;
     }
 
     public void intercambiarLineas(int lineaDestino) {
@@ -91,7 +105,7 @@ class Editor implements Serializable {
             restaurarDocumento(pilaDeshacer.pop());
             System.out.println("Deshecho.");
         } else {
-            System.out.println("No hay mas acciones para deshacer.");
+            System.out.println("No hay más acciones para deshacer.");
         }
     }
 
@@ -101,7 +115,7 @@ class Editor implements Serializable {
             restaurarDocumento(pilaRehacer.pop());
             System.out.println("Rehecho.");
         } else {
-            System.out.println("No hay mas acciones para rehacer.");
+            System.out.println("No hay más acciones para rehacer.");
         }
     }
 
