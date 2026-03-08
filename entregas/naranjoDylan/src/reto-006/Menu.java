@@ -3,14 +3,26 @@ import java.util.Scanner;
 
 class Menu {
 
-    private Editor editor;
-    private boolean ejecutando;
-    private Scanner entrada;
+    private static final String[] OPCIONES = {
+        "1. Editar linea actual",
+        "2. Borrar linea actual",
+        "3. Copiar linea actual",
+        "4. Pegar en linea actual",
+        "5. Cambiar linea activa",
+        "6. Intercambiar linea actual con otra",
+        "7. Deshacer",
+        "8. Rehacer",
+        "9. Salir"
+    };
 
-    public Menu(Editor editor) {
+    private final Editor editor;
+    private boolean ejecutando;
+    private final Scanner entrada;
+
+    public Menu(Editor editor, Scanner entrada) {
         this.editor = editor;
         this.ejecutando = true;
-        this.entrada = new Scanner(System.in);
+        this.entrada = entrada;
     }
 
     public boolean estaEjecutando() {
@@ -19,19 +31,11 @@ class Menu {
 
     public void procesarAccion() {
         System.out.println("Opciones:");
-        System.out.println("1. Editar línea actual");
-        System.out.println("2. Borrar línea actual");
-        System.out.println("3. Copiar línea actual");
-        System.out.println("4. Pegar en línea actual");
-        System.out.println("5. Cambiar línea activa");
-        System.out.println("6. Intercambiar línea actual con otra");
-        System.out.println("7. Deshacer");
-        System.out.println("8. Rehacer");
-        System.out.println("9. Salir");
+        for (String opcionTexto : OPCIONES) {
+            System.out.println(opcionTexto);
+        }
         System.out.print("Seleccione una opción: ");
-
-        int opcion = entrada.nextInt();
-        entrada.nextLine();
+        int opcion = leerEntero();
 
         switch (opcion) {
             case 1 -> {
@@ -47,12 +51,12 @@ class Menu {
                 editor.pegar();
             case 5 -> {
                 System.out.print("Ingrese el número de la nueva línea activa: ");
-                int nuevaLinea = entrada.nextInt();
+                int nuevaLinea = leerEntero();
                 editor.establecerLineaActiva(nuevaLinea);
             }
             case 6 -> {
                 System.out.print("Ingrese el número de la línea con la que desea intercambiar: ");
-                int lineaDestino = entrada.nextInt();
+                int lineaDestino = leerEntero();
                 editor.intercambiarLineas(lineaDestino);
             }
             case 7 ->
@@ -64,7 +68,18 @@ class Menu {
                 ejecutando = false;
             }
             default ->
-                System.out.println("Opción no válida.");
+                System.out.println("Opcion no valida.");
+        }
+    }
+
+    private int leerEntero() {
+        while (true) {
+            String valor = entrada.nextLine();
+            try {
+                return Integer.parseInt(valor);
+            } catch (NumberFormatException e) {
+                System.out.print("Entrada invalida. Introduzca un numero: ");
+            }
         }
     }
 }

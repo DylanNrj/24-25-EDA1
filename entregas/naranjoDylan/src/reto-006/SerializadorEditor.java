@@ -1,5 +1,10 @@
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 class SerializadorEditor {
 
@@ -15,7 +20,7 @@ class SerializadorEditor {
     public static Editor deserializar(String rutaArchivo) {
         File archivo = new File(rutaArchivo);
         if (!archivo.exists()) {
-            System.out.println("El archivo " + rutaArchivo + " no existe. Por favor, verifica el nombre.");
+            System.out.println("El archivo " + rutaArchivo + " no existe. Verifique el nombre.");
             return null;
         }
 
