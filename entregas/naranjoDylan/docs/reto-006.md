@@ -37,6 +37,18 @@ javac *.java
 java Edlin
 ```
 
+**Nota**: Compilar todos los archivos con `*.java` es necesario por las dependencias entre clases. No usar comandos individuales obsoletos.
+
+### Modo rápido sin persistencia
+
+Para edición temporal sin guardar/cargar archivos:
+
+```bash
+java Edlin --no-persist
+```
+
+Este flag omite los prompts de carga inicial y guardado final, útil para pruebas rápidas.
+
 ## Mejoras de legibilidad aplicadas
 
 - Eliminada ruta absoluta del sistema para permitir ejecucion en cualquier equipo.
