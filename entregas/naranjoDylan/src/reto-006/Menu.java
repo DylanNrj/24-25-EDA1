@@ -1,6 +1,12 @@
 
 import java.util.Scanner;
 
+/**
+ * Menu de interacción con el Editor.
+ * 
+ * TODO (Refactor): Esta clase mezcla presentación y validación de entrada (SRP).
+ * Considerar separar en MenuView (UI) y EntradaValidator (validación).
+ */
 class Menu {
 
     private static final String[] OPCIONES = {
@@ -30,14 +36,15 @@ class Menu {
     }
 
     public void procesarAccion() {
-        System.out.println("Opciones:");
+        System.out.println("\n===== MENÚ DE OPCIONES =====");
         for (String opcionTexto : OPCIONES) {
             System.out.println(opcionTexto);
         }
+        System.out.println("============================\n");
         System.out.print("Seleccione una opción: ");
-        int opcion = leerEntero();
+        int comandoSeleccionado = leerEntero();
 
-        switch (opcion) {
+        switch (comandoSeleccionado) {
             case 1 -> {
                 System.out.print("Ingrese el nuevo texto: ");
                 String nuevoTexto = entrada.nextLine();
@@ -68,7 +75,7 @@ class Menu {
                 ejecutando = false;
             }
             default ->
-                System.out.println("Opcion no valida.");
+                System.out.println("Comando no válido: " + comandoSeleccionado);
         }
     }
 

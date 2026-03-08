@@ -4,17 +4,24 @@ import java.util.Scanner;
 
 class Edlin {
 
-    private static final String CARPETA_GUARDADO = "guardado";
+    private static final String DIRECTORIO_PERSISTENCIA = "guardado";
+    // Extensión .edin para distinguir archivos serializados de Editor de otros formatos de texto plano
     private static final String EXTENSION = ".edin";
 
     public static void main(String[] args) {
-        prepararCarpetaGuardado(CARPETA_GUARDADO);
+        boolean usarPersistencia = !contieneFlag(args, "--no-persist");
+        
+        prepararCarpetaGuardado(DIRECTORIO_PERSISTENCIA);
 
         Scanner entrada = new Scanner(System.in);
-        Editor editor = cargarEditorSiCorresponde(entrada, CARPETA_GUARDADO);
+        Editor editor = null;
+        
+        if (usarPersistencia) {
+            editor = cargarEditorSiCorresponde(entrada, DIRECTORIO_PERSISTENCIA);
+        }
 
         if (editor == null) {
-            System.out.println("Creando un nuevo editor...");
+            System.out.println("[INFO] Creando un nuevo editor...");
             int numLineas = pedirNumeroLineas(entrada);
             editor = new Editor(numLineas);
         }
@@ -26,19 +33,34 @@ class Edlin {
             menu.procesarAccion();
         } while (menu.estaEjecutando());
 
-        System.out.print("Desea guardar el editor antes de salir? (S/N): ");
-        if (entrada.nextLine().equalsIgnoreCase("S")) {
-            System.out.print("Ingrese el nombre del archivo (sin extension): ");
-            String nombreArchivo = entrada.nextLine();
-            nombreArchivo = asegurarExtension(nombreArchivo, EXTENSION);
-            SerializadorEditor.serializar(editor, CARPETA_GUARDADO + File.separator + nombreArchivo);
+        if (usarPersistencia) {
+            System.out.print("[ACCION] ¿Desea guardar el editor antes de salir? (S/N): ");
+            if (entrada.nextLine().equalsIgnoreCase("S")) {
+                System.out.print("Ingrese el nombre del archivo (sin extension): ");
+                String nombreArchivo = entrada.nextLine();
+                nombreArchivo = asegurarExtension(nombreArchivo, EXTENSION);
+                SerializadorEditor.serializar(editor, DIRECTORIO_PERSISTENCIA + File.separator + nombreArchivo);
+            }
         }
 
         entrada.close();
     }
+    
+    /**
+     * Verifica si el array de argumentos contiene un flag específico.
+     * Permite evitar funcionalidad innecesaria según contexto de uso (YAGNI).
+     */
+    private static boolean contieneFlag(String[] args, String flag) {
+        for (String arg : args) {
+            if (arg.equals(flag)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private static Editor cargarEditorSiCorresponde(Scanner entrada, String carpetaGuardado) {
-        System.out.print("Desea cargar un editor existente? (S/N): ");
+        System.out.print("[ACCION] ¿Desea cargar un editor existente? (S/N): ");
         if (!entrada.nextLine().equalsIgnoreCase("S")) {
             return null;
         }
@@ -69,7 +91,7 @@ class Edlin {
         File directorio = new File(carpeta);
         if (!directorio.exists()) {
             if (directorio.mkdirs()) {
-                System.out.println("Carpeta de guardado creada: " + carpeta);
+                System.out.println("[INFO] Carpeta de guardado creada: " + carpeta);
             } else {
                 System.out.println("No se pudo crear la carpeta de guardado: " + carpeta);
             }
